@@ -1,0 +1,84 @@
+Name:		postgresql-persistent
+Namespace:	openshift
+Created:	3 months ago
+Labels:		samples.operator.openshift.io/managed=true
+Description:	PostgreSQL database service, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/.
+		
+		NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
+Annotations:	iconClass=icon-postgresql
+		openshift.io/display-name=PostgreSQL
+		openshift.io/documentation-url=https://docs.okd.io/latest/using_images/db_images/postgresql.html
+		openshift.io/long-description=This template provides a standalone PostgreSQL server with a database created.  The database is stored on persistent storage.  The database name, username, and password are chosen via parameters when provisioning this service.
+		openshift.io/provider-display-name=Red Hat, Inc.
+		openshift.io/support-url=https://access.redhat.com
+		samples.operator.openshift.io/version=4.10.5
+		tags=database,postgresql
+
+Parameters:		 
+    Name:		MEMORY_LIMIT
+    Display Name:	Memory Limit
+    Description:	Maximum amount of memory the container can use.
+    Required:		true
+    Value:		512Mi
+
+    Name:		NAMESPACE
+    Display Name:	Namespace
+    Description:	The OpenShift Namespace where the ImageStream resides.
+    Required:		false
+    Value:		openshift
+
+    Name:		DATABASE_SERVICE_NAME
+    Display Name:	Database Service Name
+    Description:	The name of the OpenShift Service exposed for the database.
+    Required:		true
+    Value:		postgresql
+
+    Name:		POSTGRESQL_USER
+    Display Name:	PostgreSQL Connection Username
+    Description:	Username for PostgreSQL user that will be used for accessing the database.
+    Required:		true
+    Generated:		expression
+    From:		user[A-Z0-9]{3}
+
+    Name:		POSTGRESQL_PASSWORD
+    Display Name:	PostgreSQL Connection Password
+    Description:	Password for the PostgreSQL connection user.
+    Required:		true
+    Generated:		expression
+    From:		[a-zA-Z0-9]{16}
+
+    Name:		POSTGRESQL_DATABASE
+    Display Name:	PostgreSQL Database Name
+    Description:	Name of the PostgreSQL database accessed.
+    Required:		true
+    Value:		sampledb
+
+    Name:		VOLUME_CAPACITY
+    Display Name:	Volume Capacity
+    Description:	Volume space available for data, e.g. 512Mi, 2Gi.
+    Required:		true
+    Value:		1Gi
+
+    Name:		POSTGRESQL_VERSION
+    Display Name:	Version of PostgreSQL Image
+    Description:	Version of PostgreSQL image to be used (10-el7, 10-el8, or latest).
+    Required:		true
+    Value:		10-el8
+
+
+Object Labels:	template=postgresql-persistent-template
+
+Message:	The following service(s) have been created in your project: ${DATABASE_SERVICE_NAME}.
+		
+		       Username: ${POSTGRESQL_USER}
+		       Password: ${POSTGRESQL_PASSWORD}
+		  Database Name: ${POSTGRESQL_DATABASE}
+		 Connection URL: postgresql://${DATABASE_SERVICE_NAME}:5432/
+		
+		For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/.
+
+Objects:				 
+    Secret				${DATABASE_SERVICE_NAME}
+    Service				${DATABASE_SERVICE_NAME}
+    PersistentVolumeClaim		${DATABASE_SERVICE_NAME}
+    DeploymentConfig.apps.openshift.io	${DATABASE_SERVICE_NAME}
