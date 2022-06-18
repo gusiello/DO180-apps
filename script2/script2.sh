@@ -10,7 +10,7 @@ git push -u origin exe1
 
 podman tag docker.io/library/httpd:2-alpine3.15 quay.io/gusiello/httpd:v1.0
 
-podman login quay.io -u gusiello -p *9JassWord11#
+podman login quay.io -u  -p 
 
 podman push quay.io/gusiello/httpd:v1.0
 
